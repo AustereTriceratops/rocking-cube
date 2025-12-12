@@ -56,6 +56,23 @@ class TestEverything(unittest.TestCase):
 
         self.assertTrue(parseMoves("RLR'L'") == LInv(RInv(L(R(self.edges)))))
         self.assertTrue(parseMoves("R'LRL'R'L") == L(RInv(LInv(R(L(RInv(self.edges)))))))
+    
+    def test_move_parser_on_existing_permutation(self):
+        permuted_edges = parseMoves("L")
+
+        self.assertTrue(parseMoves("LL", permuted_edges) == self.edges)
+        self.assertTrue(parseMoves("L'", permuted_edges) == self.edges)
+    
+    def test_permutation_order(self):
+        self.assertTrue(permutationOrder("L") == 3)
+        self.assertTrue(permutationOrder("L'") == 3)
+        self.assertTrue(permutationOrder("R") == 3)
+        self.assertTrue(permutationOrder("R'") == 3)
+        
+        self.assertTrue(permutationOrder("RLR'L'") == 7)
+        self.assertTrue(permutationOrder("L'R'L'RLR'") == 3)
+        self.assertTrue(permutationOrder("RLR'LRL'") == 2)
+        self.assertTrue(permutationOrder("RL'R'LRLRL'") == 6)
 
 
 if __name__ == '__main__':

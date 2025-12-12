@@ -1,3 +1,5 @@
+import random as rand
+
 from moves import *
 from constants import *
 
@@ -15,23 +17,121 @@ def fixedRelativeTo(base_edges, permuted_edges):
 # will parse sequences of moves like LR, R'LRL', R'LRL'R'R, etc.
 # TODO: assumes that whatever string is passed to it is valid,
 # but this should be checked
-def parseMoves(moves: str):
-    edges = [edge for edge in START_EDGES]
+def parseMoves(moves: str, edges: list[str] = []):
+    if len(edges) == 0:
+        edges = [edge for edge in START_EDGES]
 
     N = len(moves)
 
     for i in range(N):
-      if moves[i] == "'":
-        continue
-      elif moves[i] == 'R':
-        if i + 1 < N and moves[i + 1] == "'":
-          edges = RInv(edges)
-        else:
-          edges = R(edges)
-      elif moves[i] == 'L':
-        if i + 1 < N and moves[i + 1] == "'":
-          edges = LInv(edges)
-        else:
-          edges = L(edges)
+        if moves[i] == "'":
+            continue
+        elif moves[i] == 'R':
+            if i + 1 < N and moves[i + 1] == "'":
+                edges = RInv(edges)
+            else:
+                edges = R(edges)
+        elif moves[i] == 'L':
+            if i + 1 < N and moves[i + 1] == "'":
+                edges = LInv(edges)
+            else:
+                edges = L(edges)
 
     return edges
+
+def permutationOrder(moves):
+    edges = parseMoves(moves)
+    n = 1
+        
+    while edges != START_EDGES:
+        edges = parseMoves(moves, edges)
+        n += 1
+
+    return n
+
+def randomPermutation(n_moves):
+    moves = []
+
+    for i in range(n_moves):
+        r = rand.random()
+
+        if i > 0:
+            if moves[i-1] == "R" or moves[i-1] == "R'":
+                if r < 0.5:
+                    moves.append("L")
+                else:
+                    moves.append("L'")
+            elif moves[i-1] == "L" or moves[i-1] == "L'":
+                if r < 0.5:
+                    moves.append("R")
+                else:
+                    moves.append("R'")
+        else:
+            if r < 0.25:
+                moves.append("L")
+            elif r < 0.5:
+                moves.append("L'")
+            elif r < 0.75:
+                moves.append("R")
+            else:
+                moves.append("R'")
+
+    move_str = str.join("", moves)
+    edges = parseMoves(move_str)
+    return edges, move_str
+
+# generate a random permutation that leaves the corners oriented
+# i.e. #L - #L' must be 0 mod 3, same with R and R'
+# n_moves is a lower bound, the actual number of moves this method produces
+# will be in the range [n, n+2] (inclusive)
+def randomOrientedPermutation(n_moves):
+    edges = [edge for edge in START_EDGES]
+    moves = []
+    r_parity = 0
+    l_parity = 0
+
+    for i in range(n_moves):
+        r = rand.random()
+
+        if i > 0:
+            if moves[i-1] == "R" or moves[i-1] == "R'":
+                if r < 0.5:
+                    moves.append("L")
+                    l_parity += 1
+                else:
+                    moves.append("L'")
+                    l_parity -= 1
+            elif moves[i-1] == "L" or moves[i-1] == "L'":
+                if r < 0.5:
+                    moves.append("R")
+                    r_parity += 1
+                else:
+                    moves.append("R'")
+                    r_parity -= 1
+        else:
+            if r < 0.25:
+                moves.append("L")
+                l_parity += 1
+            elif r < 0.5:
+                moves.append("L'")
+                l_parity -= 1
+            elif r < 0.75:
+                moves.append("R")
+                r_parity += 1
+            else:
+                moves.append("R'")
+                r_parity -= 1
+
+    if l_parity % 3 == 1:
+        moves.append("L'")
+    elif l_parity % 3 == 2:
+        moves.append("L")
+
+    if r_parity % 3 == 1:
+        moves.append("R'")
+    elif r_parity % 3 == 2:
+        moves.append("R")
+
+    move_str = str.join("", moves)
+    edges = parseMoves(move_str)
+    return edges, move_str
