@@ -86,6 +86,31 @@ class TestEverything(unittest.TestCase):
         
         generated_moves_4 = generate_all_moves_of_len(4)
         self.assertTrue(len(generated_moves_4) == 32)
+    
+    def test_oriented_move_generation(self):
+        generated_moves_0 = generate_all_moves_of_len(0, oriented=True)
+        self.assertTrue(generated_moves_0 == set())
+        
+        generated_moves_1 = generate_all_moves_of_len(1, oriented=True)
+        self.assertTrue(generated_moves_1 == set())
+        
+        generated_moves_2 = generate_all_moves_of_len(2, oriented=True)
+        self.assertTrue(generated_moves_2 == set())
+        
+        generated_moves_4 = generate_all_moves_of_len(4, oriented=True)
+        self.assertTrue(generated_moves_4 == {
+            "LRL'R'", "LR'L'R", "L'RLR'", "L'R'LR", "RL'R'L", "R'L'RL", "RLR'L'", "R'LRL'"
+        })
+        
+        generated_moves_5 = generate_all_moves_of_len(5, oriented=True)
+        self.assertTrue(generated_moves_5 == {
+            "LRLR'L", "LR'LRL", "RLRL'R", "RL'RLR", "L'RL'R'L'", "L'R'L'RL'", "R'LR'L'R'", "R'L'R'LR'"
+        })
+        
+        generated_moves_6 = generate_all_moves_of_len(6, oriented=True)
+        self.assertTrue(generated_moves_6 == {
+            "LRLRLR", "LR'LR'LR'", "L'RL'RL'R", "L'R'L'R'L'R'", "RLRLRL", "RL'RL'RL'", "R'LR'LR'L", "R'L'R'L'R'L'"
+        })
 
 if __name__ == '__main__':
     unittest.main()
