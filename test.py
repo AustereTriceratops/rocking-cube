@@ -74,6 +74,18 @@ class TestEverything(unittest.TestCase):
         self.assertTrue(permutationOrder("RLR'LRL'") == 2)
         self.assertTrue(permutationOrder("RL'R'LRLRL'") == 6)
 
+    def test_exhaustive_move_generation(self):
+        generated_moves_0 = generate_all_moves_of_len(0)
+        self.assertTrue(generated_moves_0 == set())
+        
+        generated_moves_1 = generate_all_moves_of_len(1)
+        self.assertTrue(generated_moves_1 == {"L", "L'", "R", "R'"})
+        
+        generated_moves_2 = generate_all_moves_of_len(2)
+        self.assertTrue(generated_moves_2 == {"LR", "L'R", "RL", "R'L", "LR'", "L'R'", "RL'", "R'L'"})
+        
+        generated_moves_4 = generate_all_moves_of_len(4)
+        self.assertTrue(len(generated_moves_4) == 32)
 
 if __name__ == '__main__':
     unittest.main()

@@ -135,3 +135,39 @@ def randomOrientedPermutation(n_moves):
     move_str = str.join("", moves)
     edges = parseMoves(move_str)
     return edges, move_str
+
+def generate_all_moves_of_len(depth):
+    N = 2**(depth + 1)
+    generated_moves = set()
+    
+    if depth == 0: return generated_moves
+    
+    for i in range(N):
+        ib = format(i, f'0{depth + 1}b') # convert to binary with leading 0s
+        moves = []
+        prevMoveType = ""
+        
+        if ib[0] == "0":
+            prevMoveType = "R"
+        elif ib[0] == "1":
+            prevMoveType = "L"
+        
+        for j in range(depth):
+            if ib[j + 1] == "0":
+                if prevMoveType == "L":
+                    moves.append("R")
+                    prevMoveType = "R"
+                elif prevMoveType == "R":
+                    moves.append("L")
+                    prevMoveType = "L"
+            elif ib[j + 1] == "1":
+                if prevMoveType == "L":
+                    moves.append("R'")
+                    prevMoveType = "R"
+                elif prevMoveType == "R":
+                    moves.append("L'")
+                    prevMoveType = "L"
+        
+        generated_moves.add("".join(moves))
+        
+    return generated_moves
