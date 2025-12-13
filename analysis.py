@@ -85,7 +85,6 @@ def randomPermutation(n_moves):
 # n_moves is a lower bound, the actual number of moves this method produces
 # will be in the range [n, n+2] (inclusive)
 def randomOrientedPermutation(n_moves):
-    edges = [edge for edge in START_EDGES]
     moves = []
     r_parity = 0
     l_parity = 0
@@ -136,6 +135,7 @@ def randomOrientedPermutation(n_moves):
     edges = parseMoves(move_str)
     return edges, move_str
 
+# oriented movesets will preserve the orientation of the corner pieces
 def generate_all_moves_of_len(depth, oriented=False):
     N = 2**(depth + 1)
     generated_moves = set()
@@ -178,3 +178,18 @@ def generate_all_moves_of_len(depth, oriented=False):
             generated_moves.add("".join(moves))
         
     return generated_moves
+
+# solve the rocking cube from a corners-oriented form
+# God's number for this puzzle is 16, so the search depth is set to 16
+def solve(edges):
+    solutions = []
+
+    generated_moves = generate_all_moves_of_len(16, oriented=True)
+
+    for sequence in generated_moves:
+        guessed_solution = parseMoves(sequence, edges)
+        
+        if guessed_solution == START_EDGES:
+            solutions.append(sequence)
+
+    return solutions
