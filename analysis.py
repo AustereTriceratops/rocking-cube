@@ -14,31 +14,6 @@ def fixedRelativeTo(base_edges, permuted_edges):
 
     return result
 
-# will parse sequences of moves like LR, R'LRL', R'LRL'R'R, etc.
-# TODO: assumes that whatever string is passed to it is valid,
-# but this should be checked
-def parseMoves(moves: str, edges: list[str] = []):
-    if len(edges) == 0:
-        edges = [edge for edge in START_EDGES]
-
-    N = len(moves)
-
-    for i in range(N):
-        if moves[i] == "'":
-            continue
-        elif moves[i] == 'R':
-            if i + 1 < N and moves[i + 1] == "'":
-                edges = RInv(edges)
-            else:
-                edges = R(edges)
-        elif moves[i] == 'L':
-            if i + 1 < N and moves[i + 1] == "'":
-                edges = LInv(edges)
-            else:
-                edges = L(edges)
-
-    return edges
-
 def permutationOrder(moves):
     edges = parseMoves(moves)
     n = 1
