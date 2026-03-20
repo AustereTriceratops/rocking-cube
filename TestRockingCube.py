@@ -6,7 +6,7 @@ from analysis import *
 from RockingCube import RockingCube
 
 class TestEverything(unittest.TestCase):
-    rc = RockingCube()
+    rc = RockingCube() # TODO: should probably remove
     
     def setup(self):
         self.rc.reset()
@@ -24,30 +24,61 @@ class TestEverything(unittest.TestCase):
     def test_inverse_moves(self):
         # R'R = I
         self.rc.RInv().R()
+        print(self.rc.corner_parity)
         self.assertTrue(self.rc.edges == self.rc.START_EDGES)
+        self.assertTrue(self.rc.corner_parity['L'] == 0)
+        self.assertTrue(self.rc.corner_parity['R'] == 0)
 
         # RR' = I
         self.rc.R().RInv()
         self.assertTrue(self.rc.edges == self.rc.START_EDGES)
+        self.assertTrue(self.rc.corner_parity['L'] == 0)
+        self.assertTrue(self.rc.corner_parity['R'] == 0)
 
         # L'L = I
         self.rc.LInv().L()
         self.assertTrue(self.rc.edges == self.rc.START_EDGES)
+        self.assertTrue(self.rc.corner_parity['L'] == 0)
+        self.assertTrue(self.rc.corner_parity['R'] == 0)
 
         # LL' = I
         self.rc.L().LInv()
         self.assertTrue(self.rc.edges == self.rc.START_EDGES)
+        self.assertTrue(self.rc.corner_parity['L'] == 0)
+        self.assertTrue(self.rc.corner_parity['R'] == 0)
     
     def test_squared_moves(self):
         # RR = R'
         rc1 = RockingCube().R().R()
         rc2 = RockingCube().RInv()
         self.assertTrue(rc1.edges == rc2.edges)
+        self.assertTrue(rc1.corner_parity['L'] == 0)
+        self.assertTrue(rc1.corner_parity['R'] % 3 == 2)
+        self.assertTrue(rc1.corner_parity['R'] % 3 == rc2.corner_parity['R'] % 3)
 
         # LL = L'
         rc1 = RockingCube().L().L()
         rc2 = RockingCube().LInv()
         self.assertTrue(rc1.edges == rc2.edges)
+        self.assertTrue(rc1.corner_parity['R'] == 0)
+        self.assertTrue(rc1.corner_parity['L'] % 3 == 2)
+        self.assertTrue(rc1.corner_parity['L'] % 3 == rc2.corner_parity['L'] % 3)
+        
+        # R'R' = R
+        rc1 = RockingCube().RInv().RInv()
+        rc2 = RockingCube().R()
+        self.assertTrue(rc1.edges == rc2.edges)
+        self.assertTrue(rc1.corner_parity['L'] == 0)
+        self.assertTrue(rc1.corner_parity['R'] % 3 == 1)
+        self.assertTrue(rc1.corner_parity['R'] % 3 == rc2.corner_parity['R'] % 3)
+
+        # L'L' = L
+        rc1 = RockingCube().LInv().LInv()
+        rc2 = RockingCube().L()
+        self.assertTrue(rc1.edges == rc2.edges)
+        self.assertTrue(rc1.corner_parity['R'] == 0)
+        self.assertTrue(rc1.corner_parity['L'] % 3 == 1)
+        self.assertTrue(rc1.corner_parity['L'] % 3 == rc2.corner_parity['L'] % 3)
     
     # def test_fixed_edges(self):
     #     # R and R' leave GRd and BOd fixed
@@ -76,16 +107,16 @@ class TestEverything(unittest.TestCase):
     #     self.assertTrue(parseMoves("LL", permuted_edges) == self.edges)
     #     self.assertTrue(parseMoves("L'", permuted_edges) == self.edges)
     
-    # def test_permutation_order(self):
-    #     self.assertTrue(permutationOrder("L") == 3)
-    #     self.assertTrue(permutationOrder("L'") == 3)
-    #     self.assertTrue(permutationOrder("R") == 3)
-    #     self.assertTrue(permutationOrder("R'") == 3)
+    def test_permutation_order(self):
+        self.assertTrue(permutationOrder("L") == 3)
+        self.assertTrue(permutationOrder("L'") == 3)
+        self.assertTrue(permutationOrder("R") == 3)
+        self.assertTrue(permutationOrder("R'") == 3)
         
-    #     self.assertTrue(permutationOrder("RLR'L'") == 7)
-    #     self.assertTrue(permutationOrder("L'R'L'RLR'") == 3)
-    #     self.assertTrue(permutationOrder("RLR'LRL'") == 2)
-    #     self.assertTrue(permutationOrder("RL'R'LRLRL'") == 6)
+        self.assertTrue(permutationOrder("RLR'L'") == 7)
+        self.assertTrue(permutationOrder("L'R'L'RLR'") == 3)
+        self.assertTrue(permutationOrder("RLR'LRL'") == 2)
+        self.assertTrue(permutationOrder("RL'R'LRLRL'") == 6)
 
     # def test_exhaustive_move_generation(self):
     #     generated_moves_0 = generate_all_moves_of_len(0)

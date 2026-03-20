@@ -2,6 +2,7 @@ import random as rand
 
 from moves import *
 from constants import *
+from RockingCube import RockingCube
 
 def fixedRelativeTo(base_edges, permuted_edges):
     result = set()
@@ -15,11 +16,11 @@ def fixedRelativeTo(base_edges, permuted_edges):
     return result
 
 def permutationOrder(moves):
-    edges = parseMoves(moves)
+    cube = RockingCube.parseMoves(moves)
     n = 1
         
-    while edges != START_EDGES:
-        edges = parseMoves(moves, edges)
+    while cube.edges != cube.START_EDGES:
+        cube = RockingCube.parseMoves(moves, cube)
         n += 1
 
     return n

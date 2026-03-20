@@ -10,14 +10,19 @@ class RockingCube:
     
     edges = START_EDGES
     
+    def __init__(self):
+        self.corner_parity = {"L": 0, "R": 0}
+    
     def reset(self):
         self.edges = self.START_EDGES
+        self.corner_parity = {"L": 0, "R": 0}
     
     # Fixed: GRd, BOd
     # Cycles: (YO YG GO), (YB YR BR), (WG WR GRu), (WB WO BOu)
     # (5 13 12) (0 6 1) (11 7 10) (2 8 4) 3 9
     def R(self):
         self.edges = applyPermutation(self.edges, [1, 6, 4, 3, 8, 12, 0, 11, 2, 9, 7, 10, 13, 5])
+        self.corner_parity['R'] += 1
         return self
 
     # Fixed: GRd, BOd
@@ -25,6 +30,7 @@ class RockingCube:
     # (12 13 5) (1 6 0) (10 7 11) (4 8 2) 3 9
     def RInv(self):
         self.edges = applyPermutation(self.edges, [6, 0, 8, 3, 2, 13, 1, 10, 4, 9, 11, 7, 5, 12])
+        self.corner_parity['R'] -= 1
         return self
 
     # Fixed: GRu, BOu
@@ -32,6 +38,7 @@ class RockingCube:
     # (8 11 12) (2 7 1) (6 13 9) (5 0 3) 4 10
     def L(self):
         self.edges = applyPermutation(self.edges, [5, 7, 1, 0, 4, 3, 9, 2, 12, 13, 10, 8, 11, 6])
+        self.corner_parity['L'] += 1
         return self
 
     # Fixed: GRu, BOu
@@ -39,6 +46,7 @@ class RockingCube:
     # (12 11 8) (1 7 2) (9 13 6) (3 0 5) 4 10
     def LInv(self):
         self.edges = applyPermutation(self.edges, [3, 2, 7, 5, 4, 0, 13, 1, 11, 6, 10, 12, 8, 9])
+        self.corner_parity['L'] -= 1
         return self
 
     # will parse sequences of moves like LR, R'LRL', R'LRL'R'R, etc.
