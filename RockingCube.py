@@ -10,7 +10,7 @@ class RockingCube:
         "WR", "WO", "GRl", "GRr", "WG", "GO", "YG"
     ]
     
-    def __init__(self, edges=None, corner_parity=None):
+    def __init__(self, edges: list[str] = None, corner_parity: dict[str, int] = None):
         self.edges = self.START_EDGES if edges is None else edges
         self.corner_parity = {"L": 0, "R": 0} if corner_parity is None else corner_parity
     
@@ -20,9 +20,9 @@ class RockingCube:
     
     def copy(self) -> Self:
         edges = [edge for edge in self.edges]
-        corner_parity = {'L': self.corner_parity['L'], 'R': self.corner_parity}
+        corner_parity = {'L': self.corner_parity['L'], 'R': self.corner_parity['R']}
         
-        return RockingCube(edges, corner_parity)
+        return RockingCube(edges=edges, corner_parity=corner_parity)
     
     # Fixed: GRl, BOl
     # Cycles: (YO YG GO), (YB YR BR), (WG WR GRr), (WB WO BOr)
@@ -61,7 +61,7 @@ class RockingCube:
     # but this should be checked
     @staticmethod
     def parseMoves(moves: str, cube: Self = None) -> Self:
-        cube = RockingCube() if cube is None else cube
+        cube = RockingCube() if cube is None else cube.copy()
             
         N = len(moves)
 
@@ -229,13 +229,19 @@ class RockingCube:
     # God's number for this puzzle is 16, so the search depth is set to 16
     def generate_solutions(self):
         solutions = []
+        oriented = (self.corner_parity['L'] % 3 == 0 & self.corner_parity['R'] % 3 == 0)
 
-        generated_moves = RockingCube.generate_all_moves_of_len(16)
+        generated_moves = RockingCube.generate_all_moves_of_len(16, oriented=oriented)
 
         for sequence in generated_moves:
             guessed_solution = RockingCube.parseMoves(sequence, self)
             
-            if guessed_solution.edges == RockingCube.START_EDGES:
+            edges_solved = guessed_solution.edges == RockingCube.START_EDGES
+            corners_oriented = (
+                guessed_solution.corner_parity['L'] % 3 == 0 & guessed_solution.corner_parity['R'] % 3 == 0
+            )
+            
+            if edges_solved and corners_oriented:
                 solutions.append(sequence)
 
         return solutions

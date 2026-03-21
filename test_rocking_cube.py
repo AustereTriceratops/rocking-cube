@@ -152,6 +152,18 @@ class TestEverything(unittest.TestCase):
         self.assertTrue(generated_moves_6 == {
             "LRLRLR", "LR'LR'LR'", "L'RL'RL'R", "L'R'L'R'L'R'", "RLRLRL", "RL'RL'RL'", "R'LR'LR'L", "R'L'R'L'R'L'"
         })
+    
+    def test_oriented_solution_generation(self):
+        edges = [
+            'WR', 'BOr', 'GRr', 'YB', 'GRl', 'WB', 'YG', 
+            'YR', 'WG', 'WO', 'BOl', 'YO', 'BR', 'GO'
+        ]
+
+        rc = RockingCube(edges)
+
+        solutions = rc.generate_solutions()
+        
+        self.assertTrue("R'L'RLRL'R'LRLR'L'R'L'RL" in solutions)
 
 if __name__ == '__main__':
     unittest.main()
