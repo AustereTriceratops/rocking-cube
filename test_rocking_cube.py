@@ -78,13 +78,15 @@ class TestEverything(unittest.TestCase):
         self.assertTrue(rc1.corner_parity['L'] % 3 == rc2.corner_parity['L'] % 3)
     
     def test_fixed_edges(self):
-        # R and R' leave GRd and BOd fixed
-        self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().R().edges) == {'GRd', 'BOd'})
-        self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().RInv().edges) == {'GRd', 'BOd'})
+        # R and R' leave GRl and BOl fixed
+        print(RockingCube().edges)
+        print(RockingCube().R().edges)
+        self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().R().edges) == {'GRl', 'BOl'})
+        self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().RInv().edges) == {'GRl', 'BOl'})
 
-        # L and L' leave GRu and BOu fixed
-        self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().L().edges) == {'GRu', 'BOu'})
-        self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().LInv().edges) == {'GRu', 'BOu'})
+        # L and L' leave GRr and BOr fixed
+        self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().L().edges) == {'GRr', 'BOr'})
+        self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().LInv().edges) == {'GRr', 'BOr'})
     
     def test_move_parser(self):
         self.assertTrue(RockingCube.parseMoves("R'R").edges == self.rc.edges)

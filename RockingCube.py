@@ -3,50 +3,56 @@ from typing import Final, Self
 
 from moves import applyPermutation 
 
+# cube is oriented with the blue face up and the orange face facing you
 class RockingCube:
     START_EDGES: Final[list[str]] = [
-        "YB", "BR", "WB", "BOd", "BOu", "YO", "YR",
-        "WR", "WO", "GRd", "GRu", "WG", "GO", "YG"
+        "YB", "BR", "WB", "BOr", "BOl", "YO", "YR",
+        "WR", "WO", "GRl", "GRr", "WG", "GO", "YG"
     ]
     
-    edges = START_EDGES
-    
-    def __init__(self):
-        self.corner_parity = {"L": 0, "R": 0}
+    def __init__(self, edges=None, corner_parity=None):
+        self.edges = self.START_EDGES if edges is None else edges
+        self.corner_parity = {"L": 0, "R": 0} if corner_parity is None else corner_parity
     
     def reset(self):
         self.edges = self.START_EDGES
         self.corner_parity = {"L": 0, "R": 0}
     
-    # Fixed: GRd, BOd
-    # Cycles: (YO YG GO), (YB YR BR), (WG WR GRu), (WB WO BOu)
-    # (5 13 12) (0 6 1) (11 7 10) (2 8 4) 3 9
+    def copy(self) -> Self:
+        edges = [edge for edge in self.edges]
+        corner_parity = {'L': self.corner_parity['L'], 'R': self.corner_parity}
+        
+        return RockingCube(edges, corner_parity)
+    
+    # Fixed: GRl, BOl
+    # Cycles: (YO YG GO), (YB YR BR), (WG WR GRr), (WB WO BOr)
+    # (5 13 12) (0 6 1) (11 7 10) (2 8 3) 4 9
     def R(self):
-        self.edges = applyPermutation(self.edges, [1, 6, 4, 3, 8, 12, 0, 11, 2, 9, 7, 10, 13, 5])
+        self.edges = applyPermutation(self.edges, [1, 6, 3, 8, 4, 12, 0, 11, 2, 9, 7, 10, 13, 5])
         self.corner_parity['R'] += 1
         return self
 
-    # Fixed: GRd, BOd
-    # Cycles: (GO YG YO), (BR YR YB), (GRu WR WG), (BOu WO WB)
-    # (12 13 5) (1 6 0) (10 7 11) (4 8 2) 3 9
+    # Fixed: GRl, BOl
+    # Cycles: (GO YG YO), (BR YR YB), (GRr WR WG), (BOr WO WB)
+    # (12 13 5) (1 6 0) (10 7 11) (3 8 2) 4 9
     def RInv(self):
-        self.edges = applyPermutation(self.edges, [6, 0, 8, 3, 2, 13, 1, 10, 4, 9, 11, 7, 5, 12])
+        self.edges = applyPermutation(self.edges, [6, 0, 8, 2, 4, 13, 1, 10, 3, 9, 11, 7, 5, 12])
         self.corner_parity['R'] -= 1
         return self
 
-    # Fixed: GRu, BOu
-    # Cycles: (WO WG GO), (WB WR BR), (YR YG GRd), (YO YB BOd)
-    # (8 11 12) (2 7 1) (6 13 9) (5 0 3) 4 10
+    # Fixed: GRr, BOr
+    # Cycles: (WO WG GO), (WB WR BR), (YR YG GRl), (YO YB BOl)
+    # (8 11 12) (2 7 1) (6 13 9) (5 0 4) 3 10
     def L(self):
-        self.edges = applyPermutation(self.edges, [5, 7, 1, 0, 4, 3, 9, 2, 12, 13, 10, 8, 11, 6])
+        self.edges = applyPermutation(self.edges, [5, 7, 1, 3, 0, 4, 9, 2, 12, 13, 10, 8, 11, 6])
         self.corner_parity['L'] += 1
         return self
 
-    # Fixed: GRu, BOu
-    # Cycles: (GO WG WO), (BR WR WB), (GRd YG YR), (BOd YB YO)
-    # (12 11 8) (1 7 2) (9 13 6) (3 0 5) 4 10
+    # Fixed: GRr, BOr
+    # Cycles: (GO WG WO), (BR WR WB), (GRl YG YR), (BOl YB YO)
+    # (12 11 8) (1 7 2) (9 13 6) (4 0 5) 3 10
     def LInv(self):
-        self.edges = applyPermutation(self.edges, [3, 2, 7, 5, 4, 0, 13, 1, 11, 6, 10, 12, 8, 9])
+        self.edges = applyPermutation(self.edges, [4, 2, 7, 3, 5, 0, 13, 1, 11, 6, 10, 12, 8, 9])
         self.corner_parity['L'] -= 1
         return self
 
@@ -55,8 +61,7 @@ class RockingCube:
     # but this should be checked
     @staticmethod
     def parseMoves(moves: str, cube: Self = None) -> Self:
-        if not cube:
-            cube = RockingCube()
+        cube = RockingCube() if cube is None else cube
             
         N = len(moves)
 
@@ -222,14 +227,13 @@ class RockingCube:
 
     # solve the rocking cube from a corners-oriented form
     # God's number for this puzzle is 16, so the search depth is set to 16
-    @staticmethod
-    def solve(edges):
+    def generate_solutions(self):
         solutions = []
 
-        generated_moves = RockingCube.generate_all_moves_of_len(16, oriented=True)
+        generated_moves = RockingCube.generate_all_moves_of_len(16)
 
         for sequence in generated_moves:
-            guessed_solution = RockingCube.parseMoves(sequence, edges)
+            guessed_solution = RockingCube.parseMoves(sequence, self)
             
             if guessed_solution.edges == RockingCube.START_EDGES:
                 solutions.append(sequence)
