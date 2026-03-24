@@ -79,8 +79,6 @@ class TestEverything(unittest.TestCase):
     
     def test_fixed_edges(self):
         # R and R' leave GRl and BOl fixed
-        print(RockingCube().edges)
-        print(RockingCube().R().edges)
         self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().R().edges) == {'GRl', 'BOl'})
         self.assertTrue(fixedRelativeTo(RockingCube().edges, RockingCube().RInv().edges) == {'GRl', 'BOl'})
 
