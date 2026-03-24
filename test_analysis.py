@@ -4,7 +4,7 @@ from constants import *
 from moves import *
 from analysis import *
 
-class TestIvyCube(unittest.TestCase):
+class TestAnalysis(unittest.TestCase):
     edges = [i for i in START_EDGES_IVY]
 
     def test_get_inverse(self):

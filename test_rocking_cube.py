@@ -150,6 +150,23 @@ class TestEverything(unittest.TestCase):
         self.assertTrue(generated_moves_6 == {
             "LRLRLR", "LR'LR'LR'", "L'RL'RL'R", "L'R'L'R'L'R'", "RLRLRL", "RL'RL'RL'", "R'LR'LR'L", "R'L'R'L'R'L'"
         })
+        
+    def test_one_move_solutions(self):
+        rc = RockingCube().R()
+        solutions = rc.generate_solutions()
+        self.assertTrue(solutions == ["R'"])
+        
+        rc = RockingCube().RInv()
+        solutions = rc.generate_solutions()
+        self.assertTrue(solutions == ["R"])
+        
+        rc = RockingCube().L()
+        solutions = rc.generate_solutions()
+        self.assertTrue(solutions == ["L'"])
+        
+        rc = RockingCube().LInv()
+        solutions = rc.generate_solutions()
+        self.assertTrue(solutions == ["L"])
     
     def test_oriented_solution_generation(self):
         edges = [
@@ -158,10 +175,34 @@ class TestEverything(unittest.TestCase):
         ]
 
         rc = RockingCube(edges)
-
         solutions = rc.generate_solutions()
+        self.assertTrue("LRL'R'L'RLR'" in solutions)
         
-        self.assertTrue("R'L'RLRL'R'LRLR'L'R'L'RL" in solutions)
+    def test_corner_parity_solution_generation(self):
+        # corner parity: oriented corners, manually added edges
+        edges = [
+            "YR", "YB", "WO", "WB", "BOl", "YG", "BR",
+            "GRr", "BOr", "GRl", "WG", "WR", "YO", "GO"
+        ]
+
+        rc = RockingCube(edges)
+
+        solutions_1 = rc.generate_solutions()
+        self.assertTrue("L'R'L'R'LRLR'LR'LR'L'RL'" in solutions_1)
+        
+
+        # corner parity: edges oriented
+        rc = RockingCube().RInv()
+        rc.corner_parity['R'] = 0
+
+        solutions_2 = rc.generate_solutions()
+        self.assertTrue(solutions_2 == solutions_1)
+        
+        rc = RockingCube()
+        rc.corner_parity['R'] = 1
+        
+        solutions_3 = rc.generate_solutions()
+        self.assertTrue("L'R'L'R'LRLR'LR'LR'L'RL'R'" in solutions_3)
 
 if __name__ == '__main__':
     unittest.main()

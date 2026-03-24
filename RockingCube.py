@@ -229,20 +229,26 @@ class RockingCube:
     # God's number for this puzzle is 16, so the search depth is set to 16
     def generate_solutions(self):
         solutions = []
-        oriented = (self.corner_parity['L'] % 3 == 0 & self.corner_parity['R'] % 3 == 0)
+        oriented = (self.corner_parity['L'] % 3) == 0 and (self.corner_parity['R'] % 3) == 0
+        
+        end_loop = False
 
-        generated_moves = RockingCube.generate_all_moves_of_len(16, oriented=oriented)
+        for depth in range(16):
+            generated_moves = RockingCube.generate_all_moves_of_len(depth + 1, oriented=oriented)
 
-        for sequence in generated_moves:
-            guessed_solution = RockingCube.parseMoves(sequence, self)
+            for sequence in generated_moves:
+                guessed_solution = RockingCube.parseMoves(sequence, self)
+                
+                edges_solved = guessed_solution.edges == RockingCube.START_EDGES
+                corners_oriented = (
+                    guessed_solution.corner_parity['L'] % 3 == 0 and guessed_solution.corner_parity['R'] % 3 == 0
+                )
+                
+                if edges_solved and corners_oriented:
+                    solutions.append(sequence)
+                    end_loop = True
             
-            edges_solved = guessed_solution.edges == RockingCube.START_EDGES
-            corners_oriented = (
-                guessed_solution.corner_parity['L'] % 3 == 0 & guessed_solution.corner_parity['R'] % 3 == 0
-            )
-            
-            if edges_solved and corners_oriented:
-                solutions.append(sequence)
+            if end_loop: break
 
         return solutions
     
