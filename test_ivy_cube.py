@@ -1,70 +1,84 @@
 import unittest
 
-from constants import *
-from moves import *
-from analysis import *
+from IvyCube import IvyCube
+from analysis import fixedRelativeTo
 
 class TestIvyCube(unittest.TestCase):
-    edges = [i for i in START_EDGES_IVY]
-
     def test_basic_moves(self):
-        # TTT = I
-        edges_cycled = T(T(T(self.edges)))
-        self.assertTrue(self.edges == edges_cycled)
+        # UUU = I
+        iv = IvyCube().U().U().U()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
         
-        # FFF = I
-        edges_cycled = F(F(F(self.edges)))
-        self.assertTrue(self.edges == edges_cycled)
+        # DDD = I
+        iv = IvyCube().D().D().D()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
         
-        # BLBLBL = I
-        edges_cycled = BL(BL(BL(self.edges)))
-        self.assertTrue(self.edges == edges_cycled)
+        # LLL = I
+        iv = IvyCube().L().L().L()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
         
-        # BRBRBR = I
-        edges_cycled = BR(BR(BR(self.edges)))
-        self.assertTrue(self.edges == edges_cycled)
+        # RRR = I
+        iv = IvyCube().R().R().R()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
 
     def test_inverse_moves(self):
-        # T'T = I
-        self.assertTrue(T(TInv(self.edges)) == self.edges)
+        # U'U = I
+        iv = IvyCube().UInv().U()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
 
-        # TT' = I
-        self.assertTrue(TInv(T(self.edges)) == self.edges)
+        # UU' = I
+        iv = IvyCube().U().UInv()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
         
-        # F'F = I
-        self.assertTrue(F(FInv(self.edges)) == self.edges)
+        # D'D = I
+        iv = IvyCube().DInv().D()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
 
-        # FF' = I
-        self.assertTrue(FInv(F(self.edges)) == self.edges)
+        # DD' = I
+        iv = IvyCube().D().DInv()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
         
-         # BL'BL = I
-        self.assertTrue(BL(BLInv(self.edges)) == self.edges)
+         # L'L = I
+        iv = IvyCube().LInv().L()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
 
-        # BLBL' = I
-        self.assertTrue(BLInv(BL(self.edges)) == self.edges)
+        # LL' = I
+        iv = IvyCube().L().LInv()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
         
-         # BR'BR = I
-        self.assertTrue(BR(BRInv(self.edges)) == self.edges)
+         # R'R = I
+        iv = IvyCube().RInv().R()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
 
-        # BRBR' = I
-        self.assertTrue(BRInv(BR(self.edges)) == self.edges)
+        # RR' = I
+        iv = IvyCube().R().RInv()
+        self.assertTrue(iv.edges == IvyCube.START_EDGES)
     
     def test_squared_moves(self):
-        # TT = T'
-        self.assertTrue(T(T(self.edges)) == TInv(self.edges))
+        # UU = U'
+        self.assertTrue(IvyCube().U().U().edges == IvyCube().UInv().edges)
 
-        # FF = F'
-        self.assertTrue(F(F(self.edges)) == FInv(self.edges))
+        # DD = D'
+        self.assertTrue(IvyCube().D().D().edges == IvyCube().DInv().edges)
         
-        # BLBL = BL'
-        self.assertTrue(BL(BL(self.edges)) == BLInv(self.edges))
+        # LL = L'
+        self.assertTrue(IvyCube().L().L().edges == IvyCube().LInv().edges)
         
-        # BRBR = BR'
-        self.assertTrue(BR(BR(self.edges)) == BRInv(self.edges))
+        # RR = R'
+        self.assertTrue(IvyCube().R().R().edges == IvyCube().RInv().edges)
     
     def test_fixed_edges(self):
-        self.assertTrue(fixedRelativeTo(self.edges, T(self.edges)) == {"W", "G", "O"})
-        self.assertTrue(fixedRelativeTo(self.edges, TInv(self.edges)) == {"W", "G", "O"})
+        self.assertTrue(fixedRelativeTo(IvyCube().edges, IvyCube().U().edges) == {"W", "G", "O"})
+        self.assertTrue(fixedRelativeTo(IvyCube().edges, IvyCube().UInv().edges) == {"W", "G", "O"})
+        
+        self.assertTrue(fixedRelativeTo(IvyCube().edges, IvyCube().D().edges) == {"Y", "R", "G"})
+        self.assertTrue(fixedRelativeTo(IvyCube().edges, IvyCube().DInv().edges) == {"Y", "R", "G"})
+        
+        self.assertTrue(fixedRelativeTo(IvyCube().edges, IvyCube().L().edges) == {"B", "R", "W"})
+        self.assertTrue(fixedRelativeTo(IvyCube().edges, IvyCube().LInv().edges) == {"B", "R", "W"})
+        
+        self.assertTrue(fixedRelativeTo(IvyCube().edges, IvyCube().R().edges) == {"O", "Y", "B"})
+        self.assertTrue(fixedRelativeTo(IvyCube().edges, IvyCube().RInv().edges) == {"O", "Y", "B"})
 
 if __name__ == '__main__':
     unittest.main()

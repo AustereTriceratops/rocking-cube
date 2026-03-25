@@ -189,15 +189,15 @@ class TestEverything(unittest.TestCase):
 
         solutions_1 = rc.generate_solutions()
         self.assertTrue("L'R'L'R'LRLR'LR'LR'L'RL'" in solutions_1)
-        
 
-        # corner parity: edges oriented
+        # corner parity: oriented corners
         rc = RockingCube().RInv()
         rc.corner_parity['R'] = 0
 
         solutions_2 = rc.generate_solutions()
         self.assertTrue(solutions_2 == solutions_1)
         
+        # corner parity: unoriented corners
         rc = RockingCube()
         rc.corner_parity['R'] = 1
         
