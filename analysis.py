@@ -1,5 +1,7 @@
 import random as rand
+
 from RockingCube import RockingCube
+from IvyCube import IvyCube
 
 def fixedRelativeTo(base_edges, permuted_edges):
     result = set()

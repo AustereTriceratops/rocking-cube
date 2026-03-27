@@ -68,3 +68,38 @@ class IvyCube:
         self.edges = applyPermutation(self.edges, [0, 1, 5, 2, 4, 3])
         self.corner_parity["R"] -= 1
         return self
+    
+    # will parse sequences of moves like UR, LR'DU'D, D'LRLR'D
+    # TODO: assumes that whatever string is passed to it is valid,
+    # but this should be checked
+    @staticmethod
+    def parseMoves(moves: str, cube: Self = None) -> Self:
+        cube = IvyCube() if cube is None else cube.copy()
+            
+        N = len(moves)
+
+        for i in range(N):
+            if moves[i] == "'":
+                continue
+            elif moves[i] == 'R':
+                if i + 1 < N and moves[i + 1] == "'":
+                    cube.RInv()
+                else:
+                    cube.R()
+            elif moves[i] == 'L':
+                if i + 1 < N and moves[i + 1] == "'":
+                    cube.LInv()
+                else:
+                    cube.L()
+            elif moves[i] == 'U':
+                if i + 1 < N and moves[i + 1] == "'":
+                    cube.UInv()
+                else:
+                    cube.U()
+            elif moves[i] == 'D':
+                if i + 1 < N and moves[i + 1] == "'":
+                    cube.DInv()
+                else:
+                    cube.D()
+
+        return cube
