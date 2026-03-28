@@ -11,38 +11,46 @@ class TestEverything(unittest.TestCase):
 
     def test_L(self):
         # LLL = I
-        self.rc.L().L().L()
-        self.assertTrue(self.rc.edges == self.rc.START_EDGES)
+        rc = RockingCube().L().L().L()
+        self.assertTrue(rc.edges_oriented)
+        self.assertTrue(rc.corners_oriented)
+        
+        # L'L'L' = I
+        rc = RockingCube().LInv().LInv().LInv()
+        self.assertTrue(rc.edges_oriented)
+        self.assertTrue(rc.corners_oriented)
 
     def test_R(self):
         # RRR = I
-        self.rc.R().R().R()
-        self.assertTrue(self.rc.edges == self.rc.START_EDGES)
+        rc = RockingCube().R().R().R()
+        self.assertTrue(rc.edges_oriented)
+        self.assertTrue(rc.corners_oriented)
+        
+        # R'R'R' = I
+        rc = RockingCube().RInv().RInv().RInv()
+        self.assertTrue(rc.edges_oriented)
+        self.assertTrue(rc.corners_oriented)
 
     def test_inverse_moves(self):
         # R'R = I
-        self.rc.RInv().R()
-        self.assertTrue(self.rc.edges == self.rc.START_EDGES)
-        self.assertTrue(self.rc.corner_parity['L'] == 0)
-        self.assertTrue(self.rc.corner_parity['R'] == 0)
+        rc = RockingCube().RInv().R()
+        self.assertTrue(rc.edges_oriented)
+        self.assertTrue(rc.corners_oriented)
 
         # RR' = I
-        self.rc.R().RInv()
-        self.assertTrue(self.rc.edges == self.rc.START_EDGES)
-        self.assertTrue(self.rc.corner_parity['L'] == 0)
-        self.assertTrue(self.rc.corner_parity['R'] == 0)
+        rc = RockingCube().R().RInv()
+        self.assertTrue(rc.edges_oriented)
+        self.assertTrue(rc.corners_oriented)
 
         # L'L = I
-        self.rc.LInv().L()
-        self.assertTrue(self.rc.edges == self.rc.START_EDGES)
-        self.assertTrue(self.rc.corner_parity['L'] == 0)
-        self.assertTrue(self.rc.corner_parity['R'] == 0)
+        rc = RockingCube().LInv().L()
+        self.assertTrue(rc.edges_oriented)
+        self.assertTrue(rc.corners_oriented)
 
         # LL' = I
-        self.rc.L().LInv()
-        self.assertTrue(self.rc.edges == self.rc.START_EDGES)
-        self.assertTrue(self.rc.corner_parity['L'] == 0)
-        self.assertTrue(self.rc.corner_parity['R'] == 0)
+        rc = RockingCube().L().LInv()
+        self.assertTrue(rc.edges_oriented)
+        self.assertTrue(rc.corners_oriented)
     
     def test_squared_moves(self):
         # RR = R'
@@ -99,8 +107,10 @@ class TestEverything(unittest.TestCase):
         self.assertTrue(RockingCube.parseMoves("R'LRL'R'L").edges == self.rc.RInv().L().R().LInv().RInv().L().edges)
     
     def test_move_parser_on_existing_permutation(self):
-        self.assertTrue(RockingCube.parseMoves("LL", RockingCube.parseMoves("L")).edges == self.rc.edges)
-        self.assertTrue(RockingCube.parseMoves("L'", RockingCube.parseMoves("L")).edges == self.rc.edges)
+        self.assertTrue(RockingCube.parseMoves("LL", RockingCube.parseMoves("L")).edges_oriented)
+        self.assertTrue(RockingCube.parseMoves("L'", RockingCube.parseMoves("L")).edges_oriented)
+        self.assertTrue(RockingCube.parseMoves("L'L'", RockingCube.parseMoves("L'")).edges_oriented)
+        self.assertTrue(RockingCube.parseMoves("L", RockingCube.parseMoves("L'")).edges_oriented)
     
     def test_permutation_order(self):
         self.assertTrue(RockingCube.permutationOrder("L") == 3)

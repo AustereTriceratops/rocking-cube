@@ -7,101 +7,53 @@ class TestIvyCube(unittest.TestCase):
     def test_basic_moves(self):
         # UUU = I
         iv = IvyCube().U().U().U()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['U'] % 3 == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
-        self.assertTrue(iv.corner_parity['L'] == 0)
-        
+        self.assertTrue(iv.is_solved)
         
         # DDD = I
         iv = IvyCube().D().D().D()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['D'] % 3 == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['L'] == 0)
+        self.assertTrue(iv.is_solved)
         
         # LLL = I
         iv = IvyCube().L().L().L()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['L'] % 3 == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
+        self.assertTrue(iv.is_solved)
         
         # RRR = I
         iv = IvyCube().R().R().R()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['R'] % 3 == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
-        self.assertTrue(iv.corner_parity['L'] == 0)
+        self.assertTrue(iv.is_solved)
 
     def test_inverse_moves(self):
         # U'U = I
         iv = IvyCube().UInv().U()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['L'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
+        self.assertTrue(iv.is_solved)
 
         # UU' = I
         iv = IvyCube().U().UInv()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['L'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
+        self.assertTrue(iv.is_solved)
         
         # D'D = I
         iv = IvyCube().DInv().D()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['L'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
+        self.assertTrue(iv.is_solved)
 
         # DD' = I
         iv = IvyCube().D().DInv()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['L'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
+        self.assertTrue(iv.is_solved)
         
          # L'L = I
         iv = IvyCube().LInv().L()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['L'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
+        self.assertTrue(iv.is_solved)
 
         # LL' = I
         iv = IvyCube().L().LInv()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['L'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
+        self.assertTrue(iv.is_solved)
         
          # R'R = I
         iv = IvyCube().RInv().R()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['L'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
+        self.assertTrue(iv.edges_oriented)
+        self.assertTrue(iv.corners_oriented)
 
         # RR' = I
         iv = IvyCube().R().RInv()
-        self.assertTrue(iv.edges == IvyCube.START_EDGES)
-        self.assertTrue(iv.corner_parity['L'] == 0)
-        self.assertTrue(iv.corner_parity['R'] == 0)
-        self.assertTrue(iv.corner_parity['U'] == 0)
-        self.assertTrue(iv.corner_parity['D'] == 0)
+        self.assertTrue(iv.is_solved)
     
     def test_squared_moves(self):
         # UU = U'
@@ -166,21 +118,21 @@ class TestIvyCube(unittest.TestCase):
         self.assertTrue(fixedRelativeTo(IvyCube().edges, IvyCube().RInv().edges) == {"O", "Y", "B"})
     
     def test_move_parser(self):
-        self.assertTrue(IvyCube.parseMoves("LLL").edges == IvyCube().edges)
-        self.assertTrue(IvyCube.parseMoves("L'L").edges == IvyCube().edges)
-        self.assertTrue(IvyCube.parseMoves("LL'").edges == IvyCube().edges)
+        self.assertTrue(IvyCube.parseMoves("LLL").is_solved)
+        self.assertTrue(IvyCube.parseMoves("L'L").is_solved)
+        self.assertTrue(IvyCube.parseMoves("LL'").is_solved)
         
-        self.assertTrue(IvyCube.parseMoves("RRR").edges == IvyCube().edges)
-        self.assertTrue(IvyCube.parseMoves("R'R").edges == IvyCube().edges)
-        self.assertTrue(IvyCube.parseMoves("RR'").edges == IvyCube().edges)
+        self.assertTrue(IvyCube.parseMoves("RRR").is_solved)
+        self.assertTrue(IvyCube.parseMoves("R'R").is_solved)
+        self.assertTrue(IvyCube.parseMoves("RR'").is_solved)
         
-        self.assertTrue(IvyCube.parseMoves("UUU").edges == IvyCube().edges)
-        self.assertTrue(IvyCube.parseMoves("U'U").edges == IvyCube().edges)
-        self.assertTrue(IvyCube.parseMoves("UU'").edges == IvyCube().edges)
+        self.assertTrue(IvyCube.parseMoves("UUU").is_solved)
+        self.assertTrue(IvyCube.parseMoves("U'U").is_solved)
+        self.assertTrue(IvyCube.parseMoves("UU'").is_solved)
         
-        self.assertTrue(IvyCube.parseMoves("DDD").edges == IvyCube().edges)
-        self.assertTrue(IvyCube.parseMoves("D'D").edges == IvyCube().edges)
-        self.assertTrue(IvyCube.parseMoves("DD'").edges == IvyCube().edges)
+        self.assertTrue(IvyCube.parseMoves("DDD").is_solved)
+        self.assertTrue(IvyCube.parseMoves("D'D").is_solved)
+        self.assertTrue(IvyCube.parseMoves("DD'").is_solved)
 
         self.assertTrue(IvyCube.parseMoves("RLR'L'").edges == IvyCube().R().L().RInv().LInv().edges)
         self.assertTrue(IvyCube.parseMoves("UDU'D'").edges == IvyCube().U().D().UInv().DInv().edges)

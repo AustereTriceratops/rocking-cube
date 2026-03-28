@@ -10,6 +10,8 @@ class RockingCube:
         "WR", "WO", "GRl", "GRr", "WG", "GO", "YG"
     ]
     
+    START_CORNER_PARITY: Final[dict[str, int]] = {"L": 0, "R": 0}
+    
     def __init__(self, edges: list[str] = None, corner_parity: dict[str, int] = None):
         self.edges = self.START_EDGES if edges is None else edges
         self.corner_parity = {"L": 0, "R": 0} if corner_parity is None else corner_parity
@@ -23,6 +25,21 @@ class RockingCube:
         corner_parity = {'L': self.corner_parity['L'], 'R': self.corner_parity['R']}
         
         return RockingCube(edges=edges, corner_parity=corner_parity)
+    
+    @property
+    def corners_oriented(self) -> bool:
+        return  (
+            self.corner_parity['L'] % 3 == 0 and
+            self.corner_parity['R'] % 3 == 0
+        )
+        
+    @property
+    def edges_oriented(self) -> bool:
+        return  self.edges == self.START_EDGES
+    
+    @property
+    def solved(self) -> bool:
+        return self.corners_oriented and self.edges_oriented
     
     # Fixed: GRl, BOl
     # Cycles: (YO YG GO), (YB YR BR), (WG WR GRr), (WB WO BOr)
